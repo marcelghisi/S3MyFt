@@ -1,0 +1,3 @@
+/home/marcelghisi/Projects/ELU/S3/my_ftp/grigorc14/my_ftp/cmake-build-debug/CMakeFiles/my_ftp.dir
+/home/marcelghisi/Projects/ELU/S3/my_ftp/grigorc14/my_ftp/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/marcelghisi/Projects/ELU/S3/my_ftp/grigorc14/my_ftp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
