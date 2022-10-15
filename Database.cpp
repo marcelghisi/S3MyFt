@@ -9,7 +9,6 @@
 Database::Database(cstring database):
         db_name(std::move(database)),
         conn(database){
-
 };
 
 bool Database::connect(cstring user, cstring passw, cstring host) {
@@ -20,6 +19,7 @@ bool Database::connect(cstring user, cstring passw, cstring host) {
         error = "Not connected";
         return false;
     }
+    users = conn.load();
     return true;
 }
 
@@ -50,7 +50,7 @@ std::string get(std::list<std::string> _list, int _i){
 
 Database::DBUser Database::getUserInfo(uint32_t id) {
     DBUser userInfo;
-    std::list<std::string> user = conn.find(id);
+    std::list<std::string> user = find(id);
     if (user.empty()){
         error = "User not found";
         return {};
@@ -59,6 +59,20 @@ Database::DBUser Database::getUserInfo(uint32_t id) {
     userInfo.homedir = get(user,1).c_str();
     userInfo.uname = get(user,2).c_str();
     return userInfo;
+}
+
+std::list<std::string> Database::find(uint32_t id){
+    std::list<std::string> userL;
+    for (User *user : users) {
+        if (user->getId() == std::to_string(id)){
+            userL.emplace_front(user->getId() );
+            userL.emplace_back(user->getName());
+            userL.emplace_back(user->getPassword());
+            userL.emplace_back(user->getPath());
+            break;
+        }
+    }
+    return userL;
 }
 
 void Database::disconnect()

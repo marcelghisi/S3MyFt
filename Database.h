@@ -8,12 +8,16 @@
 #include <string>
 #include "Connection.h"
 #include "defines.h"
+#include "User.h"
+#include "vector"
 
 class Database {
 public:
     explicit Database(cstring database);
 
     bool connect(cstring user, cstring passw, cstring host);
+
+    std::list<std::string> find(uint32_t id);
 
     struct DBUser{
         int id;
@@ -32,6 +36,7 @@ private:
     std::string error;
     std::string db_name;
     Connection conn;
+    std::vector<User*> users;
 
 };
 

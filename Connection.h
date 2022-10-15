@@ -10,6 +10,8 @@
 #include <list>
 #include <fstream>
 #include <iostream>
+#include "User.h"
+#include "vector"
 
 using namespace std;
 
@@ -19,9 +21,10 @@ public:
 
     bool open(cstring admuser, cstring passw);
 
+    std::vector<User*> load();
+
     std::string auth(cstring uname, cstring pass);
 
-    std::list<std::string> find(uint32_t id);
 
     bool connected();
 

@@ -103,6 +103,12 @@ build CMakeFiles/my_ftp.dir/TcpSocket.cpp.o: CXX_COMPILER__my_ftp_Debug /home/ma
   OBJECT_DIR = CMakeFiles/my_ftp.dir
   OBJECT_FILE_DIR = CMakeFiles/my_ftp.dir
 
+build CMakeFiles/my_ftp.dir/User.cpp.o: CXX_COMPILER__my_ftp_Debug /home/marcelghisi/Projects/ELU/S3/my_ftp/grigorc14/my_ftp/User.cpp || cmake_object_order_depends_target_my_ftp
+  DEP_FILE = CMakeFiles/my_ftp.dir/User.cpp.o.d
+  FLAGS = -pthread -g
+  OBJECT_DIR = CMakeFiles/my_ftp.dir
+  OBJECT_FILE_DIR = CMakeFiles/my_ftp.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target my_ftp
@@ -111,7 +117,7 @@ build CMakeFiles/my_ftp.dir/TcpSocket.cpp.o: CXX_COMPILER__my_ftp_Debug /home/ma
 #############################################
 # Link the executable my_ftp
 
-build my_ftp: CXX_EXECUTABLE_LINKER__my_ftp_Debug CMakeFiles/my_ftp.dir/main.cpp.o CMakeFiles/my_ftp.dir/Client.cpp.o CMakeFiles/my_ftp.dir/Connection.cpp.o CMakeFiles/my_ftp.dir/Database.cpp.o CMakeFiles/my_ftp.dir/DataConnection.cpp.o CMakeFiles/my_ftp.dir/FileExplorer.cpp.o CMakeFiles/my_ftp.dir/FTPServer.cpp.o CMakeFiles/my_ftp.dir/OptionParserHandler.cpp.o CMakeFiles/my_ftp.dir/TcpSocket.cpp.o
+build my_ftp: CXX_EXECUTABLE_LINKER__my_ftp_Debug CMakeFiles/my_ftp.dir/main.cpp.o CMakeFiles/my_ftp.dir/Client.cpp.o CMakeFiles/my_ftp.dir/Connection.cpp.o CMakeFiles/my_ftp.dir/Database.cpp.o CMakeFiles/my_ftp.dir/DataConnection.cpp.o CMakeFiles/my_ftp.dir/FileExplorer.cpp.o CMakeFiles/my_ftp.dir/FTPServer.cpp.o CMakeFiles/my_ftp.dir/OptionParserHandler.cpp.o CMakeFiles/my_ftp.dir/TcpSocket.cpp.o CMakeFiles/my_ftp.dir/User.cpp.o
   FLAGS = -pthread -g
   OBJECT_DIR = CMakeFiles/my_ftp.dir
   POST_BUILD = :
