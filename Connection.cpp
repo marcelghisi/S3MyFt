@@ -12,9 +12,10 @@
 using namespace std;
 
 Connection::Connection(cstring path){
-    db_name = "/tmp/ftp_database.dat";
+    db_name = "/home/marcelghisi/ftp_root/ftp_database.dat";
     std::ifstream exists(db_name);
     if(!exists){
+        std::cout << "Creating a new database file" << std::endl;
         std::ofstream file(db_name);
         file.close();
     }
@@ -33,13 +34,6 @@ bool Connection::open(cstring admuser, cstring passw){
     is_connected = true;
     return true;
 }
-
-std::string Connection::auth(cstring uname, cstring pass){
-
-    return "1";
-}
-
-
 
 bool Connection::connected(){
     return is_connected;

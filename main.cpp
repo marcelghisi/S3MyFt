@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
     uint16_t port = 1500;
     int max_conn = 3;
     std::string public_ip = "127.0.0.1";
+    std::string root_dir = "/home/docode/project";
     srand(time(nullptr));
 
     if (oph->getHelpOption()->is_set()){
@@ -31,7 +32,9 @@ int main(int argc, char *argv[]) {
         max_conn = stoi(oph->getImplicitMax()->value());
     }
 
-    std::string root_dir = "/tmp/";
+    if (oph->getImplicitPath()->is_set()){
+        root_dir = oph->getImplicitPath()->value();
+    }
 
     FTPServer server(root_dir, port, public_ip, max_conn);
 

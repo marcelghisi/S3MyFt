@@ -23,9 +23,6 @@ public:
 
     std::vector<User*> load();
 
-    std::string auth(cstring uname, cstring pass);
-
-
     bool connected();
 
     void close();

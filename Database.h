@@ -17,19 +17,15 @@ public:
 
     bool connect(cstring user, cstring passw, cstring host);
 
-    std::list<std::string> find(uint32_t id);
+    User* find(std::string id);
 
-    struct DBUser{
-        int id;
-        std::string homedir;
-        std::string uname;
-    };
+    User* findByUserName(std::string userName);
 
-    int auth(cstring uname, cstring pass);
+    std::string auth(cstring uname, cstring pass);
 
     std::string last_error() const;
 
-    DBUser getUserInfo(uint32_t id);
+    User* getUserInfo(std::string id);
 
     void disconnect();
 private:

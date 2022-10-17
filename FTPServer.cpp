@@ -47,7 +47,7 @@ FTPServer::FTPServer(cstring root, uint16_t port, cstring ip, int max_conn) :
     } while(connections < max_connections);
 }
 
-Database::DBUser auth(TcpSocket *client) {
+User* auth(TcpSocket *client) {
     Request request;
     std::string tmp;
     std::string reply;
@@ -57,8 +57,8 @@ Database::DBUser auth(TcpSocket *client) {
 
     while(request.command() != "USER") {
         if (request.command() == "QUIT" || request.command().empty()) {
-            Database::DBUser empty{};
-            empty.id = -1;
+            User* empty = new User();
+            empty->setId("0");
             return empty;
         }
         reply = "130 Sign in first\r\n";
@@ -70,8 +70,8 @@ Database::DBUser auth(TcpSocket *client) {
     }
 
 
-    Database::DBUser user;
-    user.uname = request.arg();
+    User* user = new User();
+    user->setName(request.arg());
 
     //Access to file database as admin to query
     cstring host = "/tmp/";
@@ -85,11 +85,11 @@ Database::DBUser auth(TcpSocket *client) {
         printf("< %s", reply.c_str());
         client->send(reply, 0);
         data.disconnect();
-        Database::DBUser empty{};
-        empty.id = -1;
+        User* empty = new User();
+        empty->setId("0");
         return empty;
     }
-    if (user.uname != "anonymous")
+    if (user->getName() != "anonymous")
         reply = "331 Password required\r\n";
     else
         reply = "230 OK\r\n";
@@ -97,28 +97,28 @@ Database::DBUser auth(TcpSocket *client) {
     client->send(reply, 0);
 
 
-    if (user.uname != "anonymous") {
+    if (user->getName() != "anonymous") {
         request = tmp = client->recv();
         printf("> %s\n", tmp.c_str());
-        user.id = data.auth(user.uname, request.arg());
+        user->setId(data.auth(user->getName(), request.arg()));
 
-        if (user.id > 0) {
-            reply = "230 Log in as user " + user.uname + "\r\n";
+        if (user->getId() != "0") {
+            reply = "230 Log in as user " + user->getName() + "\r\n";
             printf("< %s", reply.c_str());
             client->send(reply, 0);
 
         }
         else {
-            reply = "530 Authentication failed" + user.uname + "\r\n";
+            reply = "530 Authentication failed" + user->getName() + "\r\n";
             printf("> %s", reply.c_str());
             client->send(reply, 0);
             data.disconnect();
-            Database::DBUser empty{};
-            empty.id = -1;
+            User* empty = new User();
+            empty->setId("0");
             return empty;
         }
     }
-    user = data.getUserInfo(user.id);
+    user = data.getUserInfo(user->getId());
     data.disconnect();
     return user;
 }
@@ -133,18 +133,18 @@ void cmdThread(Client *me, std::string ip, std::string root) {
     printf("< %s", reply.c_str());
     me->cmdSocket->send(reply, 0);
 
-    Database::DBUser user;
+    User* user;
     user = auth(me->cmdSocket);
-    if (user.id == -1) {
+    if (user->getId() == "0") {
         printf("Close connections with unknown user\n");
         me->active = false;
         return;
     }
-    me->fe = new FileExplorer(root + user.homedir);
+    me->fe = new FileExplorer(root + user->getPath());
 
     bool quit = false;
 
-    std::string pwd = user.homedir;
+    std::string pwd = user->getPath();
     while(!quit) {
         tmp = me->cmdSocket->recv();
         if (tmp.empty()) {
@@ -161,7 +161,7 @@ void cmdThread(Client *me, std::string ip, std::string root) {
             break;
             CASE("SYST"):reply = "215 UNIX Type: L8. Remote system transfer type is UNIX.\r\n";
             break;
-            CASE("STAT"):reply = std::string("211 Logged in ") + user.uname + "\n" + "211 End of status\r\n";
+            CASE("STAT"):reply = std::string("211 Logged in ") + user->getName() + "\n" + "211 End of status\r\n";
             break;
             CASE("QUIT"):reply = "221 Goodbye\r\n";
             quit = true;
@@ -272,7 +272,7 @@ void cmdThread(Client *me, std::string ip, std::string root) {
         }
     }
 
-    printf("Close connections with %s\n", user.uname.c_str());
+    printf("Close connections with %s\n", user->getName().c_str());
     me->cmdSocket->shutdown();
     me->cmdSocket->close();
     me->active = false;

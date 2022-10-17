@@ -24,57 +24,59 @@ bool Database::connect(cstring user, cstring passw, cstring host) {
 }
 
 
-int Database::auth(cstring uname, cstring pass) {
+std::string Database::auth(cstring uname, cstring pass) {
+
     if (uname == "anonymous")
-        return 1;
+        return "1";
 
-    std::string id = conn.auth(uname,pass);
+    User* theUser = findByUserName(uname);
 
-    if (id.empty()){
+    if (theUser == NULL){
         error = "User not found";
-        return -1;
+        return "0";
     }
-    return std::stoi(id);
+
+    if (theUser->getPassword() == pass){
+        return theUser->getId();
+    } else {
+        error = "Invalid password";
+        return "0";
+    }
 }
 std::string Database::last_error() const {
     return error;
 }
 
-std::string get(std::list<std::string> _list, int _i){
-    std::list<std::string>::iterator it = _list.begin();
-    for(int i=0; i<_i; i++){
-        ++it;
-    }
-    return *it;
-}
-
-Database::DBUser Database::getUserInfo(uint32_t id) {
-    DBUser userInfo;
-    std::list<std::string> user = find(id);
-    if (user.empty()){
+User* Database::getUserInfo(std::string id) {
+    User* userInfo = find(id);
+    if (userInfo == NULL){
         error = "User not found";
-        return {};
+        return NULL;
     }
-    userInfo.id = id;
-    userInfo.homedir = get(user,1).c_str();
-    userInfo.uname = get(user,2).c_str();
     return userInfo;
 }
 
-std::list<std::string> Database::find(uint32_t id){
-    std::list<std::string> userL;
+User* Database::find(std::string id){
+    User* userL;
     for (User *user : users) {
-        if (user->getId() == std::to_string(id)){
-            userL.emplace_front(user->getId() );
-            userL.emplace_back(user->getName());
-            userL.emplace_back(user->getPassword());
-            userL.emplace_back(user->getPath());
+        if (user->getId() == id){
+            userL = user;
             break;
         }
     }
     return userL;
 }
 
+User* Database::findByUserName(std::string userName){
+    User* userL = NULL;
+    for (User *user : users) {
+        if (user->getName() == userName){
+            userL = user;
+            break;
+        }
+    }
+    return userL;
+}
 void Database::disconnect()
 {
     conn.close();
