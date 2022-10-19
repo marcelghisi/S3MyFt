@@ -8,15 +8,21 @@
 #include <vector>
 #include <sstream>
 #include "User.h"
+#include <experimental/filesystem>
 
 using namespace std;
 
-Connection::Connection(cstring path){
-    db_name = "/home/marcelghisi/ftp_root/ftp_database.dat";
+Connection::Connection(std::string path){
+    root_path = path;
+    db_name = path.append("/ftp_database.dat").c_str();
     std::ifstream exists(db_name);
     if(!exists){
         std::cout << "Creating a new database file" << std::endl;
         std::ofstream file(db_name);
+        file << "1;anonymous;123456;/anonymous;" << std::endl;
+        file << "2;emilia;123456;/emilia;" << std::endl;
+        file << "3;leticia;123456;/leticia;" << std::endl;
+        file << "4;marcel;123456;/marcel;" << std::endl;
         file.close();
     }
 
@@ -63,6 +69,14 @@ std::vector<User *> Connection::load() {
         user->setName(words.at(1));
         user->setPassword(words.at(2));
         user->setPath(words.at(3));
+
+        std::stringstream bufH;
+        bufH << root_path << user->getPath();
+        if (!std::experimental::filesystem::exists(bufH.str()))
+        {
+            std::experimental::filesystem::create_directories(bufH.str());
+        }
+
         users.push_back(user);
     }
     return users;

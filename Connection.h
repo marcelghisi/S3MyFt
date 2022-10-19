@@ -17,7 +17,7 @@ using namespace std;
 
 class Connection {
 public:
-    explicit Connection(cstring path);
+    explicit Connection(std::string path);
 
     bool open(cstring admuser, cstring passw);
 
@@ -29,6 +29,7 @@ public:
 private:
     std::string error;
     std::string db_name;
+    std::string root_path;
     bool is_connected;
     //ofstream data;
     std::ifstream data;

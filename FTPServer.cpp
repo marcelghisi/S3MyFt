@@ -47,7 +47,7 @@ FTPServer::FTPServer(cstring root, uint16_t port, cstring ip, int max_conn) :
     } while(connections < max_connections);
 }
 
-User* auth(TcpSocket *client) {
+User* auth(TcpSocket *client,cstring root) {
     Request request;
     std::string tmp;
     std::string reply;
@@ -76,7 +76,7 @@ User* auth(TcpSocket *client) {
     //Access to file database as admin to query
     cstring host = "/tmp/";
     cstring username = "admin";
-    cstring db_name = "myftp";
+    cstring db_name = root;
     cstring db_password = "123456";
     Database data(db_name);
     if (!data.connect(username, db_password, host)) {
@@ -89,10 +89,14 @@ User* auth(TcpSocket *client) {
         empty->setId("0");
         return empty;
     }
-    if (user->getName() != "anonymous")
+    if (user->getName() != "anonymous"){
         reply = "331 Password required\r\n";
-    else
+    }
+    else{
+        user = data.findByUserName(user->getName());
         reply = "230 OK\r\n";
+
+    }
     printf("< %s", reply.c_str());
     client->send(reply, 0);
 
@@ -134,7 +138,7 @@ void cmdThread(Client *me, std::string ip, std::string root) {
     me->cmdSocket->send(reply, 0);
 
     User* user;
-    user = auth(me->cmdSocket);
+    user = auth(me->cmdSocket,root);
     if (user->getId() == "0") {
         printf("Close connections with unknown user\n");
         me->active = false;

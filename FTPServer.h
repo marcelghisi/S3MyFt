@@ -25,10 +25,10 @@ private:
 
 
     TcpSocket *listening;
-    const std::string root_dir;
-    const int max_connections;
+    std::string root_dir;
+    int max_connections;
     int connections;
-    const uint16_t port;
+    uint16_t port;
     std::vector<Client*> clients;
     std::string ip;
 };
